@@ -1,0 +1,58 @@
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+A problem occurred configuring root project 'spring-boot-hello-world'.
+> Could not resolve all dependencies for configuration ':classpath'.
+   > Could not find gradle.plugin.com.palantir.gradle.docker:gradle-docker:0.13.0.
+     Searched in the following locations:
+         https://repo1.maven.org/maven2/gradle/plugin/com/palantir/gradle/docker/gradle-docker/0.13.0/gradle-docker-0.13.0.pom
+         https://repo1.maven.org/maven2/gradle/plugin/com/palantir/gradle/docker/gradle-docker/0.13.0/gradle-docker-0.13.0.jar
+     Required by:
+         :spring-boot-hello-world:unspecified
+
+
+
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.10.RELEASE")
+        classpath('gradle.plugin.com.palantir.gradle.docker:gradle-docker:0.13.0')
+    }
+}
+
+group = 'springio'
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'com.palantir.docker'
+
+docker {
+    name "${project.group}/${jar.baseName}"
+    files jar.archivePath
+    buildArgs(['JAR_FILE': "${jar.archiveName}"])
+}
+
+jar {
+    baseName = 'spring-boot-hello-world'
+    version =  '0.1.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+    compile("org.springframework.boot:spring-boot-starter-data-mongodb")
+    testCompile("junit:junit")
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+}
